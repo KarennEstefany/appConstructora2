@@ -1,0 +1,4 @@
+*.exe
+*.msi
+*.jar
+node_modules/
