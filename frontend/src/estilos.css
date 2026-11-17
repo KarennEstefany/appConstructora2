@@ -4,16 +4,18 @@ Habita Constructora — Hoja de Estilos Principal (estilos.css)
 
 /* --- Variables y Paleta de Colores --- */
 :root {
---primary: #2F3E34;       /* Azul Marino Profundo */
---primary-hover: #222E26; /* Azul Oscuro */
---secondary: #C8702A;     /* Dorado / Acento */
---secondary-hover: #B06023; ;
+--primary: #2F3E34;       /* Primario: Verde Bosque */
+--primary-hover: #222E26; /* Hover Primario */
+--secondary: #C8702A;     /* Acento: Terracota */
+--secondary-hover: #B06023;
+--surface: #E8DCC4;       /* Superficie */
+--neutral: #7C7A70;       /* Neutro */
 --danger: #c53030;         /* Rojo Alerta / Eliminar */
 --danger-hover: #9b2c2c;
 --bg-main: #F4F1EA;        /* Fondo General Claro */
 --bg-card: #FFFFFF;        /* Fondo Tarjetas y Blanco */
---text-main: #1E1E1B;    /* Texto Oscuro */
---text-muted: #2d3745;   /* Texto Secundario */
+--text-main: #1E1E1B;    /* Texto Principal */
+--text-muted: #7C7A70;   /* Texto Secundario / Neutro */
 --border: #D8CEBC;       /* Bordes */
 --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
 --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -148,8 +150,8 @@ background-color: var(--secondary-hover);
 PIE DE PÁGINA (FOOTER)
 ========================================================================== */
 .footer {
-background-color: #0f172a;
-color: #94a3b8;
+background-color: var(--primary);
+color: #D8CEBC;
 padding-top: 3rem;
 margin-top: auto;
 }
@@ -169,6 +171,7 @@ margin-bottom: 1rem;
 .footer p {
 font-size: 0.95rem;
 margin-bottom: 0.5rem;
+color: #D8CEBC;
 }
 
 .footer ul li {
@@ -176,7 +179,7 @@ margin-bottom: 0.5rem;
 }
 
 .footer ul a {
-color: #94a3b8;
+color: #D8CEBC;
 transition: var(--transition);
 }
 
@@ -185,7 +188,8 @@ color: #ffffff;
 }
 
 .footer-bottom {
-border-top: 1px solid #1e293b;
+border-top: 1px solid rgba(255, 255, 255, 0.15);
+color: rgba(216, 206, 188, 0.85);
 text-align: center;
 padding: 1.25rem 0;
 font-size: 0.875rem;
@@ -463,7 +467,7 @@ margin-bottom: 1rem;
   background-position: center;
   background-repeat: no-repeat;
   color: #fff;
-  padding: 60px 0; /* Ajusta la altura vertical del banner a tu gusto */
+  padding: 100px 0; /* Mayor altura vertical para ambos banners */
 }
 
 /* Capa oscura superpuesta (Overlay) para contraste */
@@ -483,6 +487,14 @@ margin-bottom: 1rem;
   position: relative;
   z-index: 2;
 }
+
+.page-header-bg h1 {
+  color: #ffffff;
+}
+
+.page-header-bg p {
+  color: rgba(255, 255, 255, 0.9);
+}
 /* --- Detalle de Proyecto --- */
 .detalle-hero {
 max-height: 400px;
@@ -495,34 +507,221 @@ height: 400px;
 object-fit: cover;
 }
 
-.detalle-grid, .contacto-grid {
+.detalle-grid {
 display: grid;
 grid-template-columns: 1fr 400px;
 gap: 3rem;
 margin-bottom: 3.5rem;
 }
 
-.detalle-info h1 {
-margin-bottom: 0.75rem;
+.contacto-grid {
+display: grid;
+grid-template-columns: 1fr 450px;
+gap: 4.5rem;
+align-items: start;
+margin-bottom: 3.5rem;
 }
 
-.detalle-precio {
-font-size: 1.75rem;
+.contacto-info {
+display: flex;
+flex-direction: column;
+}
+
+.contacto-eyebrow {
+color: #C8702A;
+font-size: 0.85rem;
 font-weight: 700;
-color: var(--secondary);
-margin: 1rem 0;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+margin-bottom: 0.75rem;
+display: inline-block;
 }
 
-.detalle-descripcion {
-margin-top: 1.5rem;
+.contacto-titulo {
+font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+font-size: 2.85rem;
+line-height: 1.15;
+color: #1E1E1B;
+font-weight: 500;
+margin-bottom: 1.25rem;
+}
+
+.contacto-desc {
 font-size: 1.05rem;
-color: #4a5568;
-white-space: pre-line;
+line-height: 1.6;
+color: #44423C;
+margin-bottom: 2rem;
+max-width: 520px;
+}
+
+.contacto-detalles {
+display: flex;
+flex-direction: column;
+gap: 1.5rem;
+border-top: 1px solid rgba(124, 122, 112, 0.28);
+padding-top: 1.75rem;
+}
+
+.contacto-detalle-item h4 {
+font-size: 1rem;
+font-weight: 600;
+color: #1E1E1B;
+margin-bottom: 0.25rem;
+}
+
+.contacto-detalle-item p {
+color: #7C7A70;
+font-size: 0.95rem;
+line-height: 1.5;
+}
+
+.contacto-dato-directo {
+color: #1E1E1B !important;
+font-size: 0.95rem;
+margin-bottom: 0.35rem;
+}
+
+.contacto-home {
+background-color: #F4F1EA;
+padding: 4rem 0;
+border-top: 1px solid rgba(124, 122, 112, 0.2);
+}
+
+.contacto-page {
+background-color: #F4F1EA;
+padding: 3rem 0;
 }
 
 /* ==========================================================================
-FORMULARIO DE CONTACTO E INTERÉS
+FORMULARIO DE CONTACTO E INTERÉS (TEMA ESPECÍFICO)
+Fondo: #F4F1EA | Superficie: #E8DCC4 | Texto: #1E1E1B
+Primario: #2F3E34 | Acento: #C8702A | Neutro: #7C7A70
 ========================================================================== */
+.interest-form-modern {
+background-color: transparent;
+width: 100%;
+}
+
+.form-card-title {
+font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+font-size: 1.95rem;
+font-weight: 500;
+color: #1E1E1B;
+margin-bottom: 1.25rem;
+}
+
+.form-cards-vertical {
+display: flex;
+flex-direction: column;
+gap: 0.85rem;
+}
+
+.input-card {
+background-color: #E8DCC4;
+border: 1px solid rgba(124, 122, 112, 0.35);
+border-radius: 14px;
+padding: 0.65rem 1rem;
+display: flex;
+flex-direction: column;
+transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.input-card:focus-within {
+border-color: #2F3E34;
+box-shadow: 0 0 0 2px rgba(47, 62, 52, 0.18);
+background-color: #EDE3CD;
+}
+
+.input-card-label {
+font-size: 0.75rem;
+font-weight: 500;
+color: #7C7A70;
+margin-bottom: 0.2rem;
+display: block;
+}
+
+.input-card-field {
+width: 100%;
+border: none !important;
+background: transparent !important;
+outline: none !important;
+box-shadow: none !important;
+font-size: 0.95rem;
+color: #1E1E1B;
+font-family: inherit;
+padding: 0.1rem 0 !important;
+}
+
+.input-card-field::placeholder {
+color: #7C7A70;
+opacity: 0.85;
+}
+
+.input-card textarea.input-card-field {
+resize: vertical;
+min-height: 75px;
+}
+
+.input-card select.input-card-field {
+cursor: pointer;
+}
+
+.form-privacy-group {
+display: flex;
+align-items: center;
+gap: 0.65rem;
+margin-top: 0.4rem;
+font-size: 0.85rem;
+color: #1E1E1B;
+cursor: pointer;
+line-height: 1.35;
+}
+
+.form-privacy-group input[type="checkbox"] {
+width: 18px;
+height: 18px;
+accent-color: #2F3E34;
+cursor: pointer;
+border-radius: 4px;
+flex-shrink: 0;
+}
+
+.btn-submit-modern {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 0.5rem;
+background-color: #2F3E34;
+color: #FFFFFF;
+border: none;
+border-radius: 10px;
+padding: 0.85rem 1.85rem;
+font-size: 0.95rem;
+font-weight: 600;
+cursor: pointer;
+transition: background-color 0.2s ease, transform 0.15s ease;
+margin-top: 0.5rem;
+width: auto;
+align-self: flex-start;
+}
+
+.btn-submit-modern:hover:not(:disabled) {
+background-color: #222E26;
+transform: translateY(-1px);
+}
+
+.btn-submit-modern:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+}
+
+.form-footer-note {
+font-size: 0.82rem;
+color: #7C7A70;
+margin-top: 0.35rem;
+}
+
+/* Formulario tradicional (compatible) */
 .interest-form {
 background-color: #ffffff;
 padding: 2rem;
@@ -721,6 +920,13 @@ DISEÑO RESPONSIVE (CELULARES Y TABLETS)
 @media (max-width: 900px) {
 .detalle-grid, .contacto-grid {
 grid-template-columns: 1fr;
+gap: 2.5rem;
+}
+.contacto-titulo {
+font-size: 2.2rem;
+}
+.btn-submit-modern {
+width: 100%;
 }
 
 .admin-layout {

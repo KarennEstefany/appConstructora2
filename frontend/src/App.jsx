@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { BrowserRouter, Link, NavLink, Outlet, Route, Routes, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import {
@@ -13,8 +13,8 @@ const NOMBRE = 'Habita Constructora';
 const FOTO = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800';
 const ESTADOS = ['EN_PLANOS', 'EN_CONSTRUCCION', 'ENTREGA_INMEDIATA', 'FINALIZADO'];
 const TIPOS = ['CASA', 'APARTAMENTO', 'LOTE'];
-const FOTO_VIVIENDAS = 'https://media.gettyimages.com/id/1416869312/es/foto/bienvenido-a-nuestro-hogar.jpg?s=612x612&w=0&k=20&c=40L48_PUF0bZVdkxmAqTye5yzIjQ3QSiK7f4RyoyhOw=';
-const FOTO_PROYECTOS = 'https://media.gettyimages.com/id/1453502204/es/foto/suburban-home-at-sunset-with-lawn-and-garden-visible.jpg?s=612x612&w=0&k=20&c=FCR16NVOE090ww6wvnzmEbQpWV0w1CIG2Ro4lABaLr0=';
+const FOTO_VIVIENDAS = 'https://images.pexels.com/photos/7031596/pexels-photo-7031596.jpeg';
+const FOTO_PROYECTOS = 'https://images.pexels.com/photos/8134748/pexels-photo-8134748.jpeg';
 
 const pesos = (n) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(n);
 const estado = (e) => ({ EN_PLANOS: 'En planos', EN_CONSTRUCCION: 'En construcción', ENTREGA_INMEDIATA: 'Entrega inmediata', FINALIZADO: 'Finalizado' }[e] || e);
@@ -186,23 +186,28 @@ function TarjetaVivienda({ v }) {
 
 /* ---------- Formulario de contacto ---------- */
 
-function Formulario({ proyectoId = '', titulo = '¿Te interesa este proyecto?' }) {
+function Formulario({ proyectoId = '', titulo = '¿En qué podemos ayudarte?' }) {
   const [proyectos, setProyectos] = useState([]);
   const [enviando, setEnviando] = useState(false);
+  const [aceptoPolitica, setAceptoPolitica] = useState(false);
   const [datos, setDatos] = useState({ nombre: '', telefono: '', correo: '', mensaje: '', proyectoId });
 
   useEffect(() => {
     listarProyectos().then((r) => setProyectos(r.data)).catch(() => {});
   }, []);
 
- 
   const enviar = async (e) => {
     e.preventDefault();
+    if (!aceptoPolitica) {
+      await aviso('warning', 'Aviso', 'Debes aceptar la política de privacidad y el tratamiento de datos personales.');
+      return;
+    }
     setEnviando(true);
     try {
       await crearCliente({ ...datos, proyectoId: Number(datos.proyectoId) });
       await aviso('success', '¡Mensaje enviado!', 'Nos pondremos en contacto contigo pronto.');
       setDatos({ nombre: '', telefono: '', correo: '', mensaje: '', proyectoId });
+      setAceptoPolitica(false);
     } catch (error) {
       await aviso('error', 'Error', error.response?.data?.message || 'No se pudo enviar el formulario.');
     } finally {
@@ -211,21 +216,96 @@ function Formulario({ proyectoId = '', titulo = '¿Te interesa este proyecto?' }
   };
 
   return (
-    <div className="interest-form">
-      <h3>{titulo}</h3>
-      <form onSubmit={enviar}>
-        <div className="form-group"><label>Nombre *</label><input name="nombre" value={datos.nombre} onChange={alEscribir(setDatos)} required /></div>
-        <div className="form-group"><label>Teléfono *</label><input name="telefono" value={datos.telefono} onChange={alEscribir(setDatos)} required /></div>
-        <div className="form-group"><label>Correo *</label><input type="email" name="correo" value={datos.correo} onChange={alEscribir(setDatos)} required /></div>
-        <div className="form-group">
-          <label>Proyecto *</label>
-          <select name="proyectoId" value={datos.proyectoId} onChange={alEscribir(setDatos)} required>
-            <option value="">Seleccione un proyecto</option>
-            {proyectos.map((p) => <option key={p.id} value={p.id}>{p.nombre}</option>)}
+    <div className="interest-form-modern">
+      <h3 className="form-card-title">{titulo}</h3>
+      <form onSubmit={enviar} className="form-cards-vertical">
+        <div className="input-card">
+          <label className="input-card-label">Nombre completo *</label>
+          <input
+            name="nombre"
+            value={datos.nombre}
+            onChange={alEscribir(setDatos)}
+            placeholder="Escribe tu nombre"
+            required
+            className="input-card-field"
+          />
+        </div>
+
+        <div className="input-card">
+          <label className="input-card-label">Correo electrónico *</label>
+          <input
+            type="email"
+            name="correo"
+            value={datos.correo}
+            onChange={alEscribir(setDatos)}
+            placeholder="tucorreo@ejemplo.com"
+            required
+            className="input-card-field"
+          />
+        </div>
+
+        <div className="input-card">
+          <label className="input-card-label">Teléfono *</label>
+          <input
+            name="telefono"
+            value={datos.telefono}
+            onChange={alEscribir(setDatos)}
+            placeholder="+57 300 000 0000"
+            required
+            className="input-card-field"
+          />
+        </div>
+
+        <div className="input-card">
+          <label className="input-card-label">Me interesa *</label>
+          <select
+            name="proyectoId"
+            value={datos.proyectoId}
+            onChange={alEscribir(setDatos)}
+            required
+            className="input-card-field"
+          >
+            <option value="">Comprar vivienda (Selecciona un proyecto)</option>
+            {proyectos.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.nombre} ({p.ciudad})
+              </option>
+            ))}
           </select>
         </div>
-        <div className="form-group"><label>Mensaje *</label><textarea name="mensaje" rows="4" value={datos.mensaje} onChange={alEscribir(setDatos)} required /></div>
-        <button className="btn btn-primary" disabled={enviando}>{enviando ? 'Enviando...' : 'Enviar mensaje'}</button>
+
+        <div className="input-card">
+          <label className="input-card-label">Mensaje *</label>
+          <textarea
+            name="mensaje"
+            rows="3"
+            value={datos.mensaje}
+            onChange={alEscribir(setDatos)}
+            placeholder="Cuéntanos cómo imaginas tu próximo hogar."
+            required
+            className="input-card-field"
+          />
+        </div>
+
+        <label className="form-privacy-group">
+          <input
+            type="checkbox"
+            checked={aceptoPolitica}
+            onChange={(e) => setAceptoPolitica(e.target.checked)}
+            required
+          />
+          <span>Acepto la política de privacidad y el tratamiento de mis datos personales.</span>
+        </label>
+
+        <button
+          type="submit"
+          className="btn-submit-modern"
+          disabled={enviando || !aceptoPolitica}
+        >
+          {enviando ? 'Enviando...' : 'Enviar mensaje ↗'}
+        </button>
+
+        <p className="form-footer-note">Te responderemos en un día hábil. Sin compromiso.</p>
       </form>
     </div>
   );
@@ -235,8 +315,7 @@ function Formulario({ proyectoId = '', titulo = '¿Te interesa este proyecto?' }
 function SliderPrecio({ min, max, valorMin, valorMax, onCambio }) {
   const lo = Math.floor(min / PASO_PRECIO) * PASO_PRECIO;
   const hi = Math.max(Math.ceil(max / PASO_PRECIO) * PASO_PRECIO, lo + PASO_PRECIO);
-  // eslint-disable-next-line react-hooks/exhaustive-deps, no-undef
-  const desdeUrl = useCallback((v, defecto) => (v === '' ? defecto : Math.min(hi, Math.max(lo, Number(v)))));
+  const desdeUrl = useCallback((v, defecto) => (v === '' ? defecto : Math.min(hi, Math.max(lo, Number(v)))), [hi, lo]);
 
   const [a, setA] = useState(desdeUrl(valorMin, lo));
   const [b, setB] = useState(desdeUrl(valorMax, hi));
@@ -458,7 +537,33 @@ function Inicio() {
       </section>
 
       <section className="section contacto-home">
-        <div className="container"><Formulario titulo="¿Tienes preguntas? Escríbenos" /></div>
+        <div className="container">
+          <div className="contacto-grid">
+            <div className="contacto-info">
+              <span className="contacto-eyebrow">HABLEMOS DE TU FUTURO</span>
+              <h2 className="contacto-titulo">Todo comienza con una conversación.</h2>
+              <p className="contacto-desc">
+                Cuéntanos qué estás buscando. Un asesor te acompañará para encontrar el espacio ideal para vivir o invertir.
+              </p>
+
+              <div className="contacto-detalles">
+                <div className="contacto-detalle-item">
+                  <h4>Atención personalizada</h4>
+                  <p>Lunes a viernes · 8:00 a. m. – 6:00 p. m.</p>
+                </div>
+                <div className="contacto-detalle-item">
+                  <p className="contacto-dato-directo"><strong>Teléfono:</strong> (601) 555-1234</p>
+                  <p className="contacto-dato-directo"><strong>Correo:</strong> info@habitaconstructora.com</p>
+                  <p className="contacto-dato-directo"><strong>Dirección:</strong> Calle 100 #15-20, Bogotá</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="contacto-form-wrapper">
+              <Formulario titulo="¿En qué podemos ayudarte?" />
+            </div>
+          </div>
+        </div>
       </section>
     </div>
   );
@@ -504,12 +609,12 @@ function Proyectos() {
 
   return (
     <div className="page">
-      <div className="page-header page-header-bg" style={{ backgroundImage: `url(${FOTO_PROYECTOS})` }}></div>
-    
+      <div className="page-header page-header-bg" style={{ backgroundImage: `url(${FOTO_PROYECTOS})` }}>
         <div className="container">
           <h1>Nuestros proyectos</h1>
           <p>Conoce los desarrollos de vivienda que tenemos para ti.</p>
         </div>
+      </div>
       
       <div className="container section">
         <FiltrosBarra modo="proyectos" opciones={opciones} filtros={filtros}
@@ -654,18 +759,32 @@ function Viviendas() {
 
 function Contacto() {
   return (
-    <div className="page">
-      <div className="page-header"><div className="container"><h1>Contacto</h1><p>Completa el formulario y nos comunicaremos contigo.</p></div></div>
+    <div className="page contacto-page">
       <div className="container section">
         <div className="contacto-grid">
           <div className="contacto-info">
-            <h2>Información de contacto</h2>
-            <p><strong>Teléfono:</strong> (601) 555-1234</p>
-            <p><strong>Correo:</strong> info@habitaconstructora.com</p>
-            <p><strong>Dirección:</strong> Calle 100 #15-20, Bogotá</p>
-            <p><strong>Horario:</strong> Lunes a viernes, 8:00 am - 6:00 pm</p>
+            <span className="contacto-eyebrow">HABLEMOS DE TU FUTURO</span>
+            <h1 className="contacto-titulo">Todo comienza con una conversación.</h1>
+            <p className="contacto-desc">
+              Cuéntanos qué estás buscando. Un asesor te acompañará para encontrar el espacio ideal para vivir o invertir.
+            </p>
+
+            <div className="contacto-detalles">
+              <div className="contacto-detalle-item">
+                <h4>Atención personalizada</h4>
+                <p>Lunes a viernes · 8:00 a. m. – 6:00 p. m.</p>
+              </div>
+              <div className="contacto-detalle-item">
+                <p className="contacto-dato-directo"><strong>Teléfono:</strong> (601) 555-1234</p>
+                <p className="contacto-dato-directo"><strong>Correo:</strong> info@habitaconstructora.com</p>
+                <p className="contacto-dato-directo"><strong>Dirección:</strong> Calle 100 #15-20, Bogotá</p>
+              </div>
+            </div>
           </div>
-          <Formulario titulo="Envíanos tu mensaje" />
+
+          <div className="contacto-form-wrapper">
+            <Formulario titulo="¿En qué podemos ayudarte?" />
+          </div>
         </div>
       </div>
     </div>

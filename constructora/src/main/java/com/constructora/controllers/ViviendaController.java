@@ -33,7 +33,7 @@ public class ViviendaController {
         this.viviendaService = viviendaService;
     }
 
-    @GetMapping
+    // @GetMapping
     public ResponseEntity<List<ViviendaResponseDTO>>obtenerTodas(){
         return ResponseEntity.ok(viviendaService.obtenerTodas());
     }
